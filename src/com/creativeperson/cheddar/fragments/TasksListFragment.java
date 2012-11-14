@@ -1,0 +1,209 @@
+package com.creativeperson.cheddar.fragments;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.text.Html;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.creativeperson.cheddar.R;
+import com.creativeperson.cheddar.data.CheddarContentProvider;
+import com.creativeperson.cheddar.services.CheddarTasksService;
+import com.creativeperson.cheddar.utility.Constants;
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
+import com.mobeta.android.dslv.SimpleDragSortCursorAdapter.ViewBinder;
+import com.mobeta.android.dslv.SimpleFloatViewManager;
+
+public class TasksListFragment extends CheddarListFragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
+
+	public static final String LIST_ID = "list_id";
+	
+	private DragSortListView mDragSortListView;
+
+	private static String[] TASKS_PROJECTION = new String[] {
+		CheddarContentProvider.Tasks.TASK_ID,
+		CheddarContentProvider.Tasks.DISPLAY_TASK_HTML
+	};
+
+	private void updateTasks(long listId) {
+		Intent i = new Intent(getActivity(), CheddarTasksService.class);
+		i.putExtra(LIST_ID, listId);
+		getActivity().startService(i);
+	}
+
+	private static class TaskItemBinder implements ViewBinder {
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			TextView task = (TextView)view.findViewById(R.id.task_text);
+			task.setText(Html.fromHtml(cursor.getString(columnIndex)));
+			return true;
+		}
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.fragment_drag_and_drop_list_with_edit_text, null);
+
+		mDragSortListView = (DragSortListView) view.findViewById(android.R.id.list);
+		mDragSortListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		mDragSortListView.setMultiChoiceModeListener(new ModeCallback());
+
+		SimpleFloatViewManager simpleFloatViewManager = new SimpleFloatViewManager(mDragSortListView);
+		simpleFloatViewManager.setBackgroundColor(getResources().getColor(R.color.cheddar_orange));
+		mDragSortListView.setFloatViewManager(simpleFloatViewManager);
+
+		mEditText = (EditText)view.findViewById(R.id.edit_text);
+		setEditorActionListener();
+		return view;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (getArguments().containsKey(LIST_ID)) {
+			updateTasks(getArguments().getLong(LIST_ID));
+		}
+
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		mEditText.setHint(getResources().getString(R.string.task_hint_text));
+		
+		mAdapter = new SimpleDragSortCursorAdapter(getActivity(),
+				R.layout.task_list_item,
+				null,
+				new String[]{CheddarContentProvider.Tasks.DISPLAY_TASK_HTML},
+				new int[]{R.id.task_text},
+				0)
+		{
+			@Override
+			public void drop(int from, int to) {
+				super.drop(from, to);
+				Log.d(Constants.DEBUG_TAG, "List:" + getCursorPositions());
+				new ReorderTasksLocally().execute();
+			}
+		};
+
+		((SimpleDragSortCursorAdapter)mAdapter).setViewBinder(new TaskItemBinder());
+		setListAdapter(mAdapter);
+		getLoaderManager().initLoader(0, null, this);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.tasks_menu, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.refresh_tasks:
+			updateTasks(getArguments().getLong(LIST_ID));
+			Log.d(Constants.DEBUG_TAG, "Updating the list");
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new CursorLoader(getActivity(), 
+				CheddarContentProvider.Tasks.CONTENT_URI, 
+				TASKS_PROJECTION, 
+				CheddarContentProvider.Tasks.ARCHIVED_AT + " is NULL and " + CheddarContentProvider.Tasks.LIST_ID + "=?", 
+				new String[]{String.valueOf(getArguments().getLong(LIST_ID))}, 
+				CheddarContentProvider.Tasks.TASK_POSITION);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		mAdapter.swapCursor(cursor);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		mAdapter.swapCursor(null);
+	}
+
+	@Override
+	protected void archiveButtonPressed(ActionMode mode, MenuItem item) {
+		Intent i = new Intent(getActivity(), CheddarTasksService.class);
+		i.putExtra(Constants.TASKS_ARCHIVE, getListView().getCheckedItemIds());
+		getActivity().startService(i);
+	}
+
+	@Override
+	protected void keyboardDoneButtonPressed() {
+		if(!this.mEditText.getText().toString().trim().equals("")) {
+			Intent i = new Intent(getActivity(), CheddarTasksService.class);
+			i.putExtra(LIST_ID, getArguments().getLong(LIST_ID));
+			i.putExtra(Constants.CREATE_NEW_TASK, mEditText.getText().toString());
+			getActivity().startService(i);
+
+			mEditText.setText("");
+		}
+	}
+	
+	private class ReorderTasksLocally extends AsyncTask<Void, Void, Collection<Long>> {
+
+		@Override
+		protected Collection<Long> doInBackground(Void... params) {
+			Cursor cursor = mAdapter.getCursor();
+			Log.d(Constants.DEBUG_TAG,"Cursor count:" + cursor.getCount());
+			
+			cursor.moveToFirst();
+			ArrayList<Long> taskIds = new ArrayList<Long>();
+			
+			while (cursor.isAfterLast() == false)  {
+				taskIds.add(cursor.getLong(0));
+				cursor.moveToNext();
+			}
+			
+			ArrayList<Integer> currentPositions = ((SimpleDragSortCursorAdapter)mAdapter).getCursorPositions();
+			
+			if(currentPositions.size() != taskIds.size())  return null; //since the adapter lazy loads this happens somtimes
+			SortedMap<Integer, Long> sortedTasks = new TreeMap<Integer, Long>();
+			
+			for(int index = 0; index < currentPositions.size(); index++) {
+				sortedTasks.put(currentPositions.indexOf(index), taskIds.get(index));
+			}
+			
+			Collection<Long> reorderedTaskIds = sortedTasks.values();
+			return reorderedTaskIds;
+		}
+
+		@Override
+		protected void onPostExecute(Collection<Long> result) {
+			super.onPostExecute(result);
+			if(result != null) {
+				Intent i = new Intent(getActivity(), CheddarTasksService.class);
+				i.putExtra(Constants.TASKS_REORDER, new ArrayList<Long>(result));
+				i.putExtra(LIST_ID, getArguments().getLong(LIST_ID));
+				getActivity().startService(i);
+			}
+		}
+	}
+}

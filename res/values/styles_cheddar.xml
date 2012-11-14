@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.cheddar" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_cheddar</item>
+        <item name="android:listViewStyle">@style/cheddar_ListView</item>
+        <item name="android:activatedBackgroundIndicator">@drawable/selectable_background_cheddar</item>
+        <item name="android:editTextBackground">@drawable/selectable_background_edit_text</item>
+        <item name="android:actionModeCloseButtonStyle">@style/cheddar_CloseMode</item>
+        <item name="android:actionModeBackground">@drawable/ab_transparent_cheddar</item>
+        <item name="android:actionBarStyle">@style/cheddar_transparent_ActionBar</item>
+        <item name="android:alertDialogTheme">@style/cheddar_AlertDialog</item>
+    </style>
+
+    <style name="cheddar_solid_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">@drawable/ab_solid_cheddar</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_cheddar</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_cheddar</item>
+    </style>
+
+    <style name="cheddar_transparent_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_cheddar</item>
+    </style>
+
+    <style name="cheddar_ListView" parent="@android:style/Widget.Holo.Light.ListView">
+        <item name="android:listSelector">@drawable/selectable_background_cheddar</item>
+    </style>
+
+    <style name="cheddar_CloseMode" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
+        <item name="android:windowBackground">@drawable/selectable_background_cheddar</item>
+    </style>
+
+    <style name="cheddar_AlertDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:buttonBarButtonStyle">@style/cheddar_AlertButtonStyle</item>
+    </style>
+    
+    <style name="cheddar_AlertButtonStyle" parent="@android:style/Holo.Light.ButtonBar.AlertDialog">
+        <item name="android:background">@drawable/selectable_background_cheddar</item>
+    </style>
+    
+    <!-- Todo make a better custom selector for all buttons -->
+    <style name="cheddar_ButtonStyle" parent="@android:style/Widget.Holo.Light.Button">
+        <item name="android:background">@drawable/selectable_background_cheddar</item>
+    </style>
+</resources>

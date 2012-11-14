@@ -1,0 +1,28 @@
+<resources>
+
+    <string name="app_name">Cheddar</string>
+    <string name="title_listitem_list">Cheddar</string>
+    
+    <string name="no_data">No lists present.</string>
+	<string name="task_hint_text">What do you have to do?</string>
+	<string name="list_hint_text">Create a new list</string>
+	
+    <!-- Login activity strings -->
+    <string name="title_login_activity">Cheddar</string>
+    <string name="login">Login</string>
+    <string name="signing_in">Signing in</string>
+    <string name="signed_in">Signed in</string>
+    <string name="error_signing_in">Error signing in</string>
+    <string name="login_text">This is not the official Cheddar app. I built this over a weekend, its not perfect! You can support the project by contributing code on http://github.com/aliHafizji or follow me https://twitter.com/Ali_hafizji to stay updated</string>
+    
+    <!-- menu -->
+    <string name="archive">Archive</string>
+    <string name="refresh_tasks">Refresh tasks</string>
+    <string name="drag_description">Reposition task</string>
+    
+    <!-- Dialog -->
+    <string name="upgrade">Upgrade</string>
+    <string name="upgrade_later">Ahh Later!</string>
+    <string name="icon">Icon</string>
+    <string name="upgrade_dialog_message">You need a Cheddar Plus account to create more than 2 lists</string>
+</resources>

@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@color/cheddar_orange"
+    android:orientation="horizontal"
+    android:showDividers="middle"
+    tools:context=".ListItemListActivity" >
+
+    <fragment
+        android:id="@+id/listitem_list"
+        android:name="com.creativeperson.cheddar.fragments.ListsListFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:id="@+id/listitem_detail_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3" />
+
+</LinearLayout>
