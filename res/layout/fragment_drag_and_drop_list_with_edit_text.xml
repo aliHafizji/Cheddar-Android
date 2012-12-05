@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TasksListFragment">
+    tools:context=".TasksListFragment" >
 
     <EditText
         android:id="@+id/edit_text"
@@ -15,7 +15,7 @@
         android:textSize="18dip" />
 
     <com.mobeta.android.dslv.DragSortListView
-	    xmlns:dslv="http://schemas.android.com/apk/res/com.creativeperson.cheddar"
+        xmlns:dslv="http://schemas.android.com/apk/res/com.creativeperson.cheddar"
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

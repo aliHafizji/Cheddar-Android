@@ -36,7 +36,7 @@ import com.mobeta.android.dslv.SimpleFloatViewManager;
 public class TasksListFragment extends CheddarListFragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
 
 	public static final String LIST_ID = "list_id";
-	
+
 	private DragSortListView mDragSortListView;
 
 	private static String[] TASKS_PROJECTION = new String[] {
@@ -54,6 +54,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			
 			TextView task = (TextView)view.findViewById(R.id.task_text);
 			task.setText(Html.fromHtml(cursor.getString(columnIndex)));
 			return true;
@@ -91,7 +92,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		mEditText.setHint(getResources().getString(R.string.task_hint_text));
-		
+
 		mAdapter = new SimpleDragSortCursorAdapter(getActivity(),
 				R.layout.task_list_item,
 				null,
@@ -166,31 +167,31 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 			mEditText.setText("");
 		}
 	}
-	
+
 	private class ReorderTasksLocally extends AsyncTask<Void, Void, Collection<Long>> {
 
 		@Override
 		protected Collection<Long> doInBackground(Void... params) {
 			Cursor cursor = mAdapter.getCursor();
 			Log.d(Constants.DEBUG_TAG,"Cursor count:" + cursor.getCount());
-			
+
 			cursor.moveToFirst();
 			ArrayList<Long> taskIds = new ArrayList<Long>();
-			
+
 			while (cursor.isAfterLast() == false)  {
 				taskIds.add(cursor.getLong(0));
 				cursor.moveToNext();
 			}
-			
+
 			ArrayList<Integer> currentPositions = ((SimpleDragSortCursorAdapter)mAdapter).getCursorPositions();
-			
+
 			if(currentPositions.size() != taskIds.size())  return null; //since the adapter lazy loads this happens somtimes
 			SortedMap<Integer, Long> sortedTasks = new TreeMap<Integer, Long>();
-			
+
 			for(int index = 0; index < currentPositions.size(); index++) {
 				sortedTasks.put(currentPositions.indexOf(index), taskIds.get(index));
 			}
-			
+
 			Collection<Long> reorderedTaskIds = sortedTasks.values();
 			return reorderedTaskIds;
 		}

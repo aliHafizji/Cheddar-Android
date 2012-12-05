@@ -20,7 +20,7 @@ public class TasksActivity extends FragmentActivity implements LoaderCallbacks<C
 		setContentView(R.layout.activity_taskslist);
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
+		
 		if (savedInstanceState == null) {
 			Bundle arguments = new Bundle();
 			arguments.putLong(TasksListFragment.LIST_ID, getIntent().getLongExtra(TasksListFragment.LIST_ID, -1));

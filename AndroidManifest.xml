@@ -43,6 +43,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ListActivity" />
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="tag" />
+            </intent-filter>
         </activity>
         <service android:name=".services.CheddarListService"></service>
         <service android:name=".services.CheddarTasksService"></service>

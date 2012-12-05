@@ -1,14 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:background="?android:attr/activatedBackgroundIndicator" >
 
     <TextView
         android:id="@+id/task_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:background="?android:attr/activatedBackgroundIndicator"
+	    android:gravity="center_vertical"
+        android:layout_toLeftOf="@id/drag_handle"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
@@ -18,7 +21,6 @@
         android:layout_width="43dp"
         android:layout_height="43dp"
         android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
         android:background="@drawable/drag"
         android:contentDescription="@string/drag_description" />
 
