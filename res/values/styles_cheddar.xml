@@ -10,6 +10,7 @@
         <item name="android:actionModeBackground">@drawable/ab_transparent_cheddar</item>
         <item name="android:actionBarStyle">@style/cheddar_transparent_ActionBar</item>
         <item name="android:alertDialogTheme">@style/cheddar_AlertDialog</item>
+        <item name="android:checkboxStyle">@style/cheddar_CheckboxStyle</item>
     </style>
 
     <style name="cheddar_solid_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
@@ -43,4 +44,8 @@
     <style name="cheddar_ButtonStyle" parent="@android:style/Widget.Holo.Light.Button">
         <item name="android:background">@drawable/selectable_background_cheddar</item>
     </style>
+    
+    <style name="cheddar_CheckboxStyle" parent="android:Widget.CompoundButton.CheckBox">
+      <item name="android:button">@drawable/btn_check_holo_light</item>
+  </style>
 </resources>

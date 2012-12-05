@@ -5,13 +5,19 @@ import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.xml.sax.XMLReader;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.Editable;
 import android.text.Html;
+import android.text.Html.TagHandler;
+import android.text.Spannable;
+import android.text.style.StrikethroughSpan;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -49,14 +55,52 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		i.putExtra(LIST_ID, listId);
 		getActivity().startService(i);
 	}
+	
+	public static class TaskTagHandler implements TagHandler {
 
+		public void handleTag(boolean opening, String tag, Editable output,
+	            XMLReader xmlReader) {
+	        if(tag.equalsIgnoreCase("strike") || tag.equals("s") || tag.equals("del")) {
+	            processStrike(opening, output);
+	        }
+	    }
+
+	    private void processStrike(boolean opening, Editable output) {
+	        int len = output.length();
+	        if(opening) {
+	            output.setSpan(new StrikethroughSpan(), len, len, Spannable.SPAN_MARK_MARK);
+	        } else {
+	            Object obj = getLast(output, StrikethroughSpan.class);
+	            int where = output.getSpanStart(obj);
+	            output.removeSpan(obj);
+	            if (where != len) {
+	                output.setSpan(new StrikethroughSpan(), where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+	            }
+	        }
+	    }
+
+	    private Object getLast(Editable text, Class<?> kind) {
+	        Object[] objs = text.getSpans(0, text.length(), kind);
+	        if (objs.length == 0) {
+	            return null;
+	        } else {
+	            for(int i = objs.length;i>0;i--) {
+	                if(text.getSpanFlags(objs[i-1]) == Spannable.SPAN_MARK_MARK) {
+	                    return objs[i-1];
+	                }
+	            }
+	            return null;
+	        }
+	    }
+	}
+	
 	private static class TaskItemBinder implements ViewBinder {
 
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
 			
 			TextView task = (TextView)view.findViewById(R.id.task_text);
-			task.setText(Html.fromHtml(cursor.getString(columnIndex)));
+			task.setText(Html.fromHtml(cursor.getString(columnIndex), null, new TaskTagHandler()));
 			return true;
 		}
 	}
@@ -68,7 +112,6 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		mDragSortListView = (DragSortListView) view.findViewById(android.R.id.list);
 		mDragSortListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		mDragSortListView.setMultiChoiceModeListener(new ModeCallback());
-
 		SimpleFloatViewManager simpleFloatViewManager = new SimpleFloatViewManager(mDragSortListView);
 		simpleFloatViewManager.setBackgroundColor(getResources().getColor(R.color.cheddar_orange));
 		mDragSortListView.setFloatViewManager(simpleFloatViewManager);
