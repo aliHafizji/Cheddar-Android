@@ -26,8 +26,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.creativeperson.cheddar.R;
@@ -45,9 +47,13 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 
 	private DragSortListView mDragSortListView;
 
+	private static int TASK_TEXT_COLUMN = 1;
+	private static int TASK_COMPLETED_COLUMN = 2;
+	
 	private static String[] TASKS_PROJECTION = new String[] {
 		CheddarContentProvider.Tasks.TASK_ID,
-		CheddarContentProvider.Tasks.DISPLAY_TASK_HTML
+		CheddarContentProvider.Tasks.DISPLAY_TASK_HTML,
+		CheddarContentProvider.Tasks.COMPLETED_AT
 	};
 
 	private void updateTasks(long listId) {
@@ -98,9 +104,22 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-			
-			TextView task = (TextView)view.findViewById(R.id.task_text);
-			task.setText(Html.fromHtml(cursor.getString(columnIndex), null, new TaskTagHandler()));
+
+			if(columnIndex == TASK_TEXT_COLUMN) {
+				((TextView)view).setText(Html.fromHtml(cursor.getString(columnIndex), null, new TaskTagHandler()));
+			}
+			if(columnIndex == TASK_COMPLETED_COLUMN) {
+				CheckBox checkbox = (CheckBox)view;
+				RelativeLayout relativeLayout = (RelativeLayout)checkbox.getParent();
+				
+				if(cursor.getString(columnIndex) != null) {
+					checkbox.setChecked(true);
+					relativeLayout.setAlpha(0.5f);
+				} else {
+					checkbox.setChecked(false);
+					relativeLayout.setAlpha(1f);
+				}
+			}
 			return true;
 		}
 	}
@@ -139,8 +158,8 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		mAdapter = new SimpleDragSortCursorAdapter(getActivity(),
 				R.layout.task_list_item,
 				null,
-				new String[]{CheddarContentProvider.Tasks.DISPLAY_TASK_HTML},
-				new int[]{R.id.task_text},
+				new String[]{CheddarContentProvider.Tasks.COMPLETED_AT, CheddarContentProvider.Tasks.DISPLAY_TASK_HTML},
+				new int[]{R.id.task_checkbox, R.id.task_text},
 				0)
 		{
 			@Override
@@ -149,7 +168,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 				Log.d(Constants.DEBUG_TAG, "List:" + getCursorPositions());
 				new ReorderTasksLocally().execute();
 			}
-		};
+		}; 
 
 		((SimpleDragSortCursorAdapter)mAdapter).setViewBinder(new TaskItemBinder());
 		setListAdapter(mAdapter);

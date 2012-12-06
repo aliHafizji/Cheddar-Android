@@ -3,7 +3,7 @@
     <string name="app_name">Cheddar</string>
     <string name="title_listitem_list">Cheddar</string>
     
-    <string name="no_data">No lists present.</string>
+    <string name="no_data">No items present</string>
 	<string name="task_hint_text">What do you have to do?</string>
 	<string name="list_hint_text">Create a new list</string>
 	
