@@ -28,7 +28,7 @@
     </style>
 
     <style name="cheddar_CloseMode" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
-        <item name="android:windowBackground">@drawable/selectable_background_cheddar</item>
+        <item name="android:background">@drawable/selectable_background_cheddar</item>
     </style>
 
     <style name="cheddar_AlertDialog" parent="@android:style/Theme.Holo.Light.Dialog">
