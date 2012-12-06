@@ -53,11 +53,14 @@ public class CheddarTasksService extends CheddarIntentService {
 		} else {
 			long listId = intent.getLongExtra(TasksListFragment.LIST_ID, -1);
 			String task = intent.getStringExtra(Constants.CREATE_NEW_TASK);
-			long taskIds[] = intent.getLongArrayExtra(Constants.TASKS_ARCHIVE);
+			long archiveTaskIds[] = intent.getLongArrayExtra(Constants.TASKS_ARCHIVE);
+			long completeTaskId = intent.getLongExtra(Constants.COMPLETE_TASK, -1);
 			ArrayList<Long> reorderedTaskIDs = (ArrayList<Long>)intent.getSerializableExtra(Constants.TASKS_REORDER);
 			
-			if(taskIds != null) {
-				archiveTasks(taskIds);
+			if(archiveTaskIds != null) {
+				updateTasks(archiveTaskIds, "archived_at", new Time().toString());
+			} else if(completeTaskId != -1) {
+				updateTasks(new long[] {completeTaskId}, "completed_at", intent.getStringExtra(Constants.COMPLETE_TASK_UPDATE_VALUE));
 			} else if(listId != -1 && task != null) {
 				createTask(listId, task);
 			} else if(listId != -1 && reorderedTaskIDs != null) {
@@ -106,13 +109,13 @@ public class CheddarTasksService extends CheddarIntentService {
 		}
 	}
 	
-	private void archiveTasks(long[] tasks) {
+	private void updateTasks(long[] tasks, String key, Object value) {
 		String accessToken = mSharedPrefs.getString(Constants.ACCESS_TOKEN, null);
 		for(long taskId : tasks) {
-			String archiveTasksURL = Constants.TASKS_URL + "/" + taskId + "?access_token=" + accessToken;
+			String updateTasksURL = Constants.TASKS_URL + "/" + taskId + "?access_token=" + accessToken;
 			
 			try {
-				URL url = new URL(archiveTasksURL);
+				URL url = new URL(updateTasksURL);
 				URLConnection urlConnection = url.openConnection();
 				HttpsURLConnection httpsConnection = (HttpsURLConnection)urlConnection;
 				
@@ -121,7 +124,11 @@ public class CheddarTasksService extends CheddarIntentService {
 				httpsConnection.setRequestMethod("PUT");
 				
 				JSONObject jsonObj = new JSONObject();
-				jsonObj.put("archived_at", new Time().toString());
+				if(value == null) {
+					jsonObj.put(key, "null");
+				} else {
+					jsonObj.put(key, value);
+				}
 				
 				OutputStream outputStream = httpsConnection.getOutputStream();
 				outputStream.write(jsonObj.toString().getBytes());
@@ -246,8 +253,13 @@ public class CheddarTasksService extends CheddarIntentService {
 				contentValues.put(CheddarContentProvider.Tasks.TASK_POSITION, jsonReader.nextLong());
 			} else if(name.equals("archived_at") && jsonReader.peek() != JsonToken.NULL) {
 				contentValues.put(CheddarContentProvider.Tasks.ARCHIVED_AT, jsonReader.nextString());
-			} else if(name.equals("completed_at") && jsonReader.peek() != JsonToken.NULL) {
-				contentValues.put(CheddarContentProvider.Tasks.COMPLETED_AT, jsonReader.nextString());
+			} else if(name.equals("completed_at")) {
+				if(jsonReader.peek() != JsonToken.NULL) {
+					contentValues.put(CheddarContentProvider.Tasks.COMPLETED_AT, jsonReader.nextString());
+				} else {
+					contentValues.putNull(CheddarContentProvider.Tasks.COMPLETED_AT);
+					jsonReader.skipValue();
+				}
 			} else if(name.equals("text")) {
 				contentValues.put(CheddarContentProvider.Tasks.TASK_TEXT, jsonReader.nextString());
 			} else if(name.equals("display_text")) {

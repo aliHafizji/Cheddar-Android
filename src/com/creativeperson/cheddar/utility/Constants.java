@@ -32,6 +32,8 @@ public class Constants {
 	public static final String TASKS_URL = "https://api.cheddarapp.com/v1/tasks";
 	
 	public static final String TASKS_ARCHIVE = "tasks_archive";
+	public static final String COMPLETE_TASK = "task_complete";
+	public static final String COMPLETE_TASK_UPDATE_VALUE = "task_complete_value";
 	public static final String CREATE_NEW_TASK = "new_task";
 	
 	public static final String LISTS_REFRESH_COMPLETE = "com.creativeperson.cheddar.lists_refresh_complete";

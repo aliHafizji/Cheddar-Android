@@ -17,6 +17,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Html.TagHandler;
 import android.text.Spannable;
+import android.text.format.Time;
 import android.text.style.StrikethroughSpan;
 import android.util.Log;
 import android.view.ActionMode;
@@ -27,6 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -62,7 +65,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		getActivity().startService(i);
 	}
 	
-	public static class TaskTagHandler implements TagHandler {
+	public class TaskTagHandler implements TagHandler {
 
 		public void handleTag(boolean opening, String tag, Editable output,
 	            XMLReader xmlReader) {
@@ -100,7 +103,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 	    }
 	}
 	
-	private static class TaskItemBinder implements ViewBinder {
+	private class TaskItemBinder implements ViewBinder {
 
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
@@ -110,6 +113,9 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 			}
 			if(columnIndex == TASK_COMPLETED_COLUMN) {
 				CheckBox checkbox = (CheckBox)view;
+				checkbox.setTag(cursor.getLong(0));
+				checkbox.setOnCheckedChangeListener(null);
+				
 				RelativeLayout relativeLayout = (RelativeLayout)checkbox.getParent();
 				
 				if(cursor.getString(columnIndex) != null) {
@@ -119,6 +125,27 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 					checkbox.setChecked(false);
 					relativeLayout.setAlpha(1f);
 				}
+				
+				checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						Log.d(Constants.DEBUG_TAG, "Task tag:" + buttonView.getTag() + " isChecked:" + isChecked);
+
+						Intent i = new Intent(getActivity(), CheddarTasksService.class);
+						i.putExtra(Constants.COMPLETE_TASK, (Long)buttonView.getTag());
+						
+						RelativeLayout parent = (RelativeLayout) buttonView.getParent();
+						if(isChecked) {
+							parent.setAlpha(0.5f);
+							i.putExtra(Constants.COMPLETE_TASK_UPDATE_VALUE, new Time().toString());
+						} else {
+							parent.setAlpha(1f);
+						}
+						
+						getActivity().startService(i);
+					}
+				});
 			}
 			return true;
 		}
