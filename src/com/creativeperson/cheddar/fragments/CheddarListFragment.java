@@ -24,6 +24,8 @@ public abstract class CheddarListFragment extends ListFragment {
 	protected BroadcastReceiver mReceiver;
 	
 	protected abstract void archiveButtonPressed(ActionMode mode, MenuItem item);
+	protected abstract void contextualActionBarShow();
+	protected abstract void contextualActionBarRemoved();
 	protected abstract void keyboardDoneButtonPressed();
 	
 	protected void setEditorActionListener() {
@@ -51,6 +53,7 @@ public abstract class CheddarListFragment extends ListFragment {
             inflater.inflate(R.menu.context_menu, menu);
             mode.setTitle("Select Items");
             setSubtitle(mode);
+            contextualActionBarShow();
             return true;
         }
 
@@ -81,6 +84,7 @@ public abstract class CheddarListFragment extends ListFragment {
             switch (checkedCount) {
                 case 0:
                     mode.setTitle(null);
+                    contextualActionBarRemoved();
                     break;
                 case 1:
                     mode.setTitle("One item selected");

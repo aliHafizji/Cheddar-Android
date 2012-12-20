@@ -21,6 +21,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/edit_text"
         android:layout_margin="5dip"
+        android:scrollbars="none"
         dslv:collapsed_height="1dp"
         dslv:drag_enabled="true"
         dslv:drag_scroll_start="0.33"

@@ -216,7 +216,17 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 			mEditText.setText("");
 		}
 	}
+	
+	@Override
+	protected void contextualActionBarShow() {
+		
+	}
 
+	@Override
+	protected void contextualActionBarRemoved() {
+		
+	}
+	
 	public void setActivatedPosition(int position) {
 		if (position == ListView.INVALID_POSITION) {
 			getListView().setItemChecked(mActivatedPosition, false);

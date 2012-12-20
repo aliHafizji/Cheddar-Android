@@ -7,7 +7,10 @@ import java.util.TreeMap;
 
 import org.xml.sax.XMLReader;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,15 +30,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.creativeperson.cheddar.R;
+import com.creativeperson.cheddar.R.anim;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.services.CheddarTasksService;
 import com.creativeperson.cheddar.utility.Constants;
@@ -49,6 +56,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 	public static final String LIST_ID = "list_id";
 
 	private DragSortListView mDragSortListView;
+	private MenuItem mRefreshMenuItem;
 
 	private static int TASK_TEXT_COLUMN = 1;
 	private static int TASK_COMPLETED_COLUMN = 2;
@@ -63,6 +71,27 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		Intent i = new Intent(getActivity(), CheddarTasksService.class);
 		i.putExtra(LIST_ID, listId);
 		getActivity().startService(i);
+	}
+	
+	private void startRefreshAnimation() {
+		if (getActivity() != null) {
+
+			LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            ImageView iv = (ImageView) inflater.inflate(R.layout.refresh_action_view, null);
+
+            Animation rotation = AnimationUtils.loadAnimation(getActivity(), anim.refresh_anim);
+            rotation.setRepeatCount(Animation.INFINITE);
+            iv.startAnimation(rotation);
+
+            mRefreshMenuItem.setActionView(iv);
+        }
+	}
+	
+	private void stopRefreshAnimation() {
+		if(mRefreshMenuItem != null && mRefreshMenuItem.getActionView() != null) {
+			mRefreshMenuItem.getActionView().clearAnimation();
+			mRefreshMenuItem.setActionView(null);
+		}
 	}
 	
 	public class TaskTagHandler implements TagHandler {
@@ -164,6 +193,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 
 		mEditText = (EditText)view.findViewById(R.id.edit_text);
 		setEditorActionListener();
+		
 		return view;
 	}
 
@@ -175,8 +205,35 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		}
 
 		setHasOptionsMenu(true);
+		mReceiver = new BroadcastReceiver() {
+			
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if(intent.getAction().equals(Constants.TASKS_REFRESH_COMPLETE)) {
+					stopRefreshAnimation();
+				}
+			}
+		};
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		if(mReceiver != null) {
+			IntentFilter intentFilter = new IntentFilter(Constants.TASKS_REFRESH_COMPLETE);
+			getActivity().registerReceiver(mReceiver, intentFilter);
+		}
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		if(mReceiver != null) {
+			getActivity().unregisterReceiver(mReceiver);
+		}
+	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -211,8 +268,9 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.refresh_tasks:
+			mRefreshMenuItem = item;
 			updateTasks(getArguments().getLong(LIST_ID));
-			Log.d(Constants.DEBUG_TAG, "Updating the list");
+			startRefreshAnimation();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -231,11 +289,13 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		mAdapter.swapCursor(cursor);
+		stopRefreshAnimation();
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		mAdapter.swapCursor(null);
+		stopRefreshAnimation();
 	}
 
 	@Override
@@ -257,6 +317,16 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		}
 	}
 
+	@Override
+	protected void contextualActionBarShow() {
+		mDragSortListView.setDragEnabled(false);
+	}
+
+	@Override
+	protected void contextualActionBarRemoved() {
+		mDragSortListView.setDragEnabled(true);
+	}
+	
 	private class ReorderTasksLocally extends AsyncTask<Void, Void, Collection<Long>> {
 
 		@Override
