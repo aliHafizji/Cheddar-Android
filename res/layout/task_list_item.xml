@@ -18,11 +18,11 @@
 
     <ImageView
         android:id="@id/drag_handle"
-        android:layout_width="43dp"
-        android:layout_height="43dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/drag"
+        android:background="@drawable/ic_drag_normal"
         android:contentDescription="@string/drag_description" />
 
     <TextView
