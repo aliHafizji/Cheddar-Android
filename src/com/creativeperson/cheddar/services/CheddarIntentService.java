@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
+import android.widget.Toast;
 
+import com.creativeperson.cheddar.R;
 import com.creativeperson.cheddar.utility.Constants;
 
 public class CheddarIntentService extends IntentService {
@@ -15,6 +17,7 @@ public class CheddarIntentService extends IntentService {
 	protected ConnectivityManager mConnectivityManger;
 	protected SharedPreferences mSharedPrefs;
 	protected Editor mPrefsEditor;
+	protected Toast mToast;
 	
 	public CheddarIntentService(String name) {
 		super(name);
@@ -23,6 +26,7 @@ public class CheddarIntentService extends IntentService {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		this.mToast = Toast.makeText(this, getResources().getString(R.string.no_offline_support), Toast.LENGTH_SHORT);
 		mConnectivityManger = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		mSharedPrefs = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
 		mPrefsEditor = mSharedPrefs.edit();

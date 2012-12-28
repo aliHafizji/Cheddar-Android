@@ -15,10 +15,8 @@ import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
 import android.text.format.Time;
 import android.util.JsonReader;
@@ -26,9 +24,9 @@ import android.util.JsonToken;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.creativeperson.cheddar.R;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.fragments.TasksListFragment;
-import com.creativeperson.cheddar.receivers.ConnectivityChangeReceiver;
 import com.creativeperson.cheddar.utility.Constants;
 
 public class CheddarTasksService extends CheddarIntentService {
@@ -43,13 +41,14 @@ public class CheddarTasksService extends CheddarIntentService {
 		boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
 
 		if(!isConnected) {
-			PackageManager pm = getPackageManager();
-
-			ComponentName connectivityReceiver = new ComponentName(this, ConnectivityChangeReceiver.class);
-
-			pm.setComponentEnabledSetting(connectivityReceiver, 
-					PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 
-					PackageManager.DONT_KILL_APP);
+			/**
+			 * TODO:
+			 * This is the part where we handle offline support. 
+			 * We register a listener, when internet connection is resumed we reconnect to all websockets
+			 *
+			 */
+			Log.d(Constants.DEBUG_TAG, "This is called again and again");
+			this.mToast.show();
 		} else {
 			long listId = intent.getLongExtra(TasksListFragment.LIST_ID, -1);
 			String task = intent.getStringExtra(Constants.CREATE_NEW_TASK);

@@ -14,11 +14,9 @@ import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.format.Time;
@@ -28,7 +26,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.creativeperson.cheddar.data.CheddarContentProvider;
-import com.creativeperson.cheddar.receivers.ConnectivityChangeReceiver;
 import com.creativeperson.cheddar.utility.Constants;
 
 public class CheddarListService extends CheddarIntentService {
@@ -51,13 +48,14 @@ public class CheddarListService extends CheddarIntentService {
 		boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
 
 		if(!isConnected) {
-			PackageManager pm = getPackageManager();
-
-			ComponentName connectivityReceiver = new ComponentName(this, ConnectivityChangeReceiver.class);
-
-			pm.setComponentEnabledSetting(connectivityReceiver, 
-					PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 
-					PackageManager.DONT_KILL_APP);
+			/**
+			 * TODO:
+			 * This is the part where we handle offline support. 
+			 * We register a listener, when internet connection is resumed we reconnect to all websockets
+			 *
+			 */
+			Log.d(Constants.DEBUG_TAG, "This is called again and again");
+			this.mToast.show();
 		} else {
 			long listIds[] = intent.getLongArrayExtra(Constants.LISTS_ARCHIVE);
 			String listTitle = intent.getStringExtra(Constants.CREATE_NEW_LIST);

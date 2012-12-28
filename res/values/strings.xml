@@ -6,6 +6,7 @@
     <string name="no_data">No items present</string>
 	<string name="task_hint_text">What do you have to do?</string>
 	<string name="list_hint_text">Create a new list</string>
+	<string name="no_offline_support">Please connect to the internet to resume usage</string>
 	
     <!-- Login activity strings -->
     <string name="title_login_activity">Cheddar</string>
