@@ -69,7 +69,7 @@ public abstract class CheddarListFragment extends ListFragment {
                 break;
             }
             return true;
-        } 
+        }
 
         public void onDestroyActionMode(ActionMode mode) {
         }
