@@ -66,6 +66,7 @@ public class LoginActivity extends Activity {
 		super.onResume();
 		Uri uri = getIntent().getData();
 		if (uri != null && uri.toString().startsWith(Constants.REDIRECT_URI)) {
+			Toast.makeText(getApplicationContext(), getResources().getString(R.string.retrieving_auth_token), Toast.LENGTH_SHORT).show();
 			String code = uri.getQueryParameter("code");
 			new RetrieveAccessTokenTask().execute(code);
 		}

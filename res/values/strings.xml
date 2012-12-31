@@ -12,6 +12,7 @@
     <string name="title_login_activity">Cheddar</string>
     <string name="login">Login</string>
     <string name="signing_in">Signing in</string>
+    <string name="retrieving_auth_token">Retrieving Auth token</string>
     <string name="signed_in">Signed in</string>
     <string name="error_signing_in">Error signing in</string>
     <string name="login_text">This is not the official Cheddar app. I built this over a weekend, its not perfect! You can support the project by contributing code on http://github.com/aliHafizji or follow me https://twitter.com/Ali_hafizji to stay updated</string>
