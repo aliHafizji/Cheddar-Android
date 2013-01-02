@@ -10,19 +10,19 @@ Get the latest source
   * Import the project in eclipse.
   * Build and Run
 
-The project depends on some external libraries. Since I haven't added any ant build scripts you need to download them manually and add them in your workspace. (I promise to make this better)
+The project depends on some external libraries.
 
   * [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh)
   * [Android-DragAndDropListView](https://github.com/bauerca/drag-sort-listview)
 
-## Why isn't this in the Android market?
+Download them and add them as library dependencies.
 
-Although the app is functional there is still a lot of work that needs to be done, such as:
+## Cheddar now on the Android market
 
-  * Support Android versions below Honeycomb (This will require a lot of changes to the design and styles)
+The app is now available on the Android market at URL(). There are still somethings that are left to implement:
+
+  * Support Android versions below Honeycomb (This will require a lot of changes to the styles used)
   * Get the realtime API working (The only reason why this is not included is that I don't like any of the current Android libraries for [Pusher](http://pusher.com/docs/client_libraries#android-java). So first I need to make one)
-
-There are lot of other things that need to be done which I will include in the project tracker. Once these are over the app will be available on the market.
 
 ## License
 
