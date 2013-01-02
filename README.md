@@ -24,6 +24,11 @@ The app is now available on the Android play [store](https://play.google.com/sto
   * Support Android versions below Honeycomb (This will require a lot of changes to the styles used)
   * Get the realtime API working (The only reason why this is not included is that I don't like any of the current Android libraries for [Pusher](http://pusher.com/docs/client_libraries#android-java). So first I need to make one)
 
+<a href="http://play.google.com/store/apps/details?id=com.creativemedia.cheddar">
+  <img alt="Android app on Google Play"
+       src="http://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
+</a>
+
 ## License
 
 Copyright 2012 Kauserali Hafizji
