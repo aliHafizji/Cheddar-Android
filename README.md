@@ -17,9 +17,9 @@ The project depends on some external libraries.
 
 Download them and add them as library dependencies.
 
-## Cheddar now on the Android market
+## Cheddar now on the Play store
 
-The app is now available on the Android market at URL(). There are still somethings that are left to implement:
+The app is now available on the Android play [store](https://play.google.com/store/apps/details?id=com.creativeperson.cheddar). There are still things left to implement such as:
 
   * Support Android versions below Honeycomb (This will require a lot of changes to the styles used)
   * Get the realtime API working (The only reason why this is not included is that I don't like any of the current Android libraries for [Pusher](http://pusher.com/docs/client_libraries#android-java). So first I need to make one)
