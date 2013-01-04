@@ -72,6 +72,7 @@ public abstract class CheddarListFragment extends ListFragment {
         } 
 
         public void onDestroyActionMode(ActionMode mode) {
+        	contextualActionBarRemoved();
         }
 
         public void onItemCheckedStateChanged(ActionMode mode,

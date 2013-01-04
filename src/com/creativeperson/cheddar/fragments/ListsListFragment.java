@@ -23,12 +23,10 @@ import com.creativeperson.cheddar.R;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.services.CheddarListService;
 import com.creativeperson.cheddar.utility.Constants;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.creativeperson.cheddar.views.PullToRefreshListView;
+import com.creativeperson.cheddar.views.RefreshableListView;
 
-public class ListsListFragment extends CheddarListFragment implements LoaderCallbacks<Cursor>, OnRefreshListener2<ListView>{
+public class ListsListFragment extends CheddarListFragment implements LoaderCallbacks<Cursor> {
 
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 	private PullToRefreshListView mPullToRefreshListView;
@@ -53,28 +51,35 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_pull_to_refresh_with_edit_text, null);
-		
-		mPullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.pulltorefresh);
-		mPullToRefreshListView.getRefreshableView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		mPullToRefreshListView.getRefreshableView().setMultiChoiceModeListener(new ModeCallback(){
+		return inflater.inflate(R.layout.fragment_pull_to_refresh_with_edit_text, null);
+	}
 
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		
+		mPullToRefreshListView = (PullToRefreshListView)getListView();
+		mPullToRefreshListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		
+		mPullToRefreshListView.setOnPullToRefresh(new RefreshableListView.OnPullToRefresh() {
+			
 			@Override
-			protected void setSubtitle(ActionMode mode) {
-				super.setSubtitle(mode);
-				if (getListView().getCheckedItemCount() > 0) {
-					mPullToRefreshListView.setMode(Mode.DISABLED);
-				} else {
-					mPullToRefreshListView.setMode(Mode.PULL_DOWN_TO_REFRESH);
-				}
+			public void onPullToRefresh() {
+				forceListRefresh();
+				mPullToRefreshListView.setEnabled(false);
 			}
 		});
+		
+		mPullToRefreshListView.setMultiChoiceModeListener(new ModeCallback());
         
         mEditText = (EditText)view.findViewById(R.id.edit_text);
         setEditorActionListener();
-        return view;
+        
+		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
+		}
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,7 +88,8 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				if(intent.getAction().equals(Constants.LISTS_REFRESH_COMPLETE)) {
-					mPullToRefreshListView.onRefreshComplete();
+					mPullToRefreshListView.getListHeaderView().close(0);
+					mPullToRefreshListView.setEnabled(true);
 				} else if(intent.getAction().equals(Constants.CHEDDAR_PLUS_ACCOUNT_NEEDED)) {
 					createCheddarPlusDialog();
 				}
@@ -117,7 +123,6 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 		
 		forceListRefresh();
 
-		mPullToRefreshListView.setOnRefreshListener(this);
 		mEditText.setHint(getResources().getString(R.string.list_hint_text));
 		
 		mAdapter = new SimpleCursorAdapter(getActivity(),
@@ -128,14 +133,6 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 				0);
 		setListAdapter(mAdapter);
 		getLoaderManager().initLoader(0, null, this);
-	}
-
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
-		}
 	}
 
 	@Override
@@ -168,17 +165,6 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 		}
 	}
 	
-	@Override
-	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-		
-	}
-	
-	@Override
-	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-		forceListRefresh();
-		mPullToRefreshListView.setRefreshing(true);
-	}
-
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new CursorLoader(getActivity(), 
@@ -219,12 +205,12 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 	
 	@Override
 	protected void contextualActionBarShow() {
-		
+		mPullToRefreshListView.setPullToRefreshEnabled(false);
 	}
 
 	@Override
 	protected void contextualActionBarRemoved() {
-		
+		mPullToRefreshListView.setPullToRefreshEnabled(true);
 	}
 	
 	public void setActivatedPosition(int position) {

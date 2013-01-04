@@ -8,6 +8,11 @@
 	<string name="list_hint_text">Create a new list</string>
 	<string name="no_offline_support">Please connect to the internet to resume usage</string>
 	
+	<!-- PullToRefresh -->
+	<string name="refresh_pull_down">Pull down to refresh…</string>
+    <string name="refresh_release">Release to refresh…</string>
+    <string name="loading">Loading…</string>
+    
     <!-- Login activity strings -->
     <string name="title_login_activity">Cheddar</string>
     <string name="login">Login</string>
