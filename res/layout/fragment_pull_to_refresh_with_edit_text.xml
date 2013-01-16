@@ -14,10 +14,12 @@
         android:imeOptions="actionDone" />
     
     <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:dslv="http://schemas.android.com/apk/res/com.creativeperson.cheddar"
         android:id="@+id/pulltorefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/edit_text" />
+        android:layout_below="@id/edit_text"
+        ptrAnimationStyle="@attr/flip" />
 
     <include
         layout="@layout/empty_text_view" />

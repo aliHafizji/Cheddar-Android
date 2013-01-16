@@ -13,12 +13,6 @@
         <item name="android:checkboxStyle">@style/cheddar_CheckboxStyle</item>
     </style>
 
-    <style name="cheddar_solid_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
-        <item name="android:background">@drawable/ab_solid_cheddar</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_cheddar</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_cheddar</item>
-    </style>
-
     <style name="cheddar_transparent_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/ab_transparent_cheddar</item>
     </style>
