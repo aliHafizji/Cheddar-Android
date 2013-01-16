@@ -7,7 +7,12 @@ import net.smartam.leeloo.client.response.OAuthJSONAccessTokenResponse;
 import net.smartam.leeloo.common.exception.OAuthProblemException;
 import net.smartam.leeloo.common.exception.OAuthSystemException;
 import net.smartam.leeloo.common.message.types.GrantType;
-import android.app.Activity;
+
+import org.holoeverywhere.app.Activity;
+import org.holoeverywhere.widget.Button;
+import org.holoeverywhere.widget.TextView;
+import org.holoeverywhere.widget.Toast;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -17,9 +22,6 @@ import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.creativeperson.cheddar.utility.Constants;
 

@@ -1,13 +1,14 @@
 package com.creativeperson.cheddar.views;
 
+import org.holoeverywhere.widget.ProgressBar;
+import org.holoeverywhere.widget.TextView;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.creativeperson.cheddar.R;
 
@@ -25,15 +26,14 @@ public class PullToRefreshListView extends RefreshableListView {
 				ImageView img = (ImageView) v.findViewById(R.id.refresh_icon);
 				Animation anim;
 				if (canUpdate) {
-					anim = AnimationUtils.loadAnimation(context,
-							R.anim.rotate_up);
+					anim = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_up);
 					tv.setText(R.string.refresh_release);
 				} else {
 					tv.setText(R.string.refresh_pull_down);
-					anim = AnimationUtils.loadAnimation(context,
-							R.anim.rotate_down);
+					anim = AnimationUtils.loadAnimation(context,R.anim.rotate_down);
 				}
 				img.startAnimation(anim);
+
 			}
 
 			@Override

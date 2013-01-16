@@ -1,20 +1,21 @@
 package com.creativeperson.cheddar.fragments;
 
+import org.holoeverywhere.app.ListFragment;
+import org.holoeverywhere.widget.ListView.MultiChoiceModeListener;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.CursorAdapter;
-import android.view.ActionMode;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.creativeperson.cheddar.R;
 
 public abstract class CheddarListFragment extends ListFragment {
@@ -35,7 +36,7 @@ public abstract class CheddarListFragment extends ListFragment {
 				@Override
 				public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 					if(actionId == EditorInfo.IME_ACTION_DONE) {
-						InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+						InputMethodManager mgr = (InputMethodManager) getSupportActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 						mgr.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
 						keyboardDoneButtonPressed();
 						return true;
@@ -46,12 +47,12 @@ public abstract class CheddarListFragment extends ListFragment {
 		}
 	}
 	
-	protected class ModeCallback implements ListView.MultiChoiceModeListener {
+	
+	protected class ModeCallback implements MultiChoiceModeListener {
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = getActivity().getMenuInflater();
+            MenuInflater inflater = getSupportActivity().getSupportMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
-            mode.setTitle("Select Items");
             setSubtitle(mode);
             contextualActionBarShow();
             return true;
@@ -65,7 +66,6 @@ public abstract class CheddarListFragment extends ListFragment {
             switch (item.getItemId()) {
             case R.id.archive:
             	archiveButtonPressed(mode, item);
-            	mode.setTitle(null);
                 break;
             }
             return true;
@@ -81,10 +81,10 @@ public abstract class CheddarListFragment extends ListFragment {
         }
 
         protected void setSubtitle(ActionMode mode) {
-            final int checkedCount = getListView().getCheckedItemCount();
+            final int checkedCount = getListView().getCheckedItemIds().length;
             switch (checkedCount) {
                 case 0:
-                    mode.setTitle(null);
+                    mode.finish();
                     contextualActionBarRemoved();
                     break;
                 case 1:

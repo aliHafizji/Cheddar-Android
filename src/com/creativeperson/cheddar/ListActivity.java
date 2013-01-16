@@ -1,16 +1,17 @@
 package com.creativeperson.cheddar;
 
+import org.holoeverywhere.app.Activity;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
 import com.creativeperson.cheddar.fragments.CheddarPlusDialogFragment.CheddarPlusDialogListener;
 import com.creativeperson.cheddar.fragments.ListsListFragment;
 import com.creativeperson.cheddar.fragments.TasksListFragment;
 import com.creativeperson.cheddar.utility.Constants;
 
-public class ListActivity extends FragmentActivity implements ListsListFragment.Callbacks, CheddarPlusDialogListener {
+public class ListActivity extends Activity implements ListsListFragment.Callbacks, CheddarPlusDialogListener {
 
 	private boolean mTwoPane;
 

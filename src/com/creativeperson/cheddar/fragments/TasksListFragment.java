@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.holoeverywhere.LayoutInflater;
+import org.holoeverywhere.widget.EditText;
 import org.xml.sax.XMLReader;
 
 import android.content.BroadcastReceiver;
@@ -23,33 +25,32 @@ import android.text.Spannable;
 import android.text.format.Time;
 import android.text.style.StrikethroughSpan;
 import android.util.Log;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.creativeperson.cheddar.R;
 import com.creativeperson.cheddar.R.anim;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.services.CheddarTasksService;
 import com.creativeperson.cheddar.utility.Constants;
-import com.mobeta.android.dslv.DragSortListView;
-import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
-import com.mobeta.android.dslv.SimpleDragSortCursorAdapter.ViewBinder;
-import com.mobeta.android.dslv.SimpleFloatViewManager;
+import com.creativeperson.cheddar.views.dslv.DragSortListView;
+import com.creativeperson.cheddar.views.dslv.SimpleDragSortCursorAdapter;
+import com.creativeperson.cheddar.views.dslv.SimpleDragSortCursorAdapter.ViewBinder;
+import com.creativeperson.cheddar.views.dslv.SimpleFloatViewManager;
 
 public class TasksListFragment extends CheddarListFragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -147,13 +148,20 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 				
 				RelativeLayout relativeLayout = (RelativeLayout)checkbox.getParent();
 				
+				float fromAlpha = 1, toAlpha = 0.5f;
+				
 				if(cursor.getString(columnIndex) != null) {
 					checkbox.setChecked(true);
-					relativeLayout.setAlpha(0.5f);
 				} else {
 					checkbox.setChecked(false);
-					relativeLayout.setAlpha(1f);
+					fromAlpha = 0.5f;
+					toAlpha = 1;
 				}
+				
+				AlphaAnimation alpha = new AlphaAnimation(fromAlpha, toAlpha);
+				alpha.setDuration(0);
+				alpha.setFillAfter(true);
+				relativeLayout.startAnimation(alpha);
 				
 				checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					
@@ -165,12 +173,19 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 						i.putExtra(Constants.COMPLETE_TASK, (Long)buttonView.getTag());
 						
 						RelativeLayout parent = (RelativeLayout) buttonView.getParent();
+						
+						float fromAlpha = 1, toAlpha = 0.5f;
 						if(isChecked) {
-							parent.setAlpha(0.5f);
 							i.putExtra(Constants.COMPLETE_TASK_UPDATE_VALUE, new Time().toString());
 						} else {
-							parent.setAlpha(1f);
+							fromAlpha = 0.5f;
+							toAlpha = 1;
 						}
+						
+						AlphaAnimation alpha = new AlphaAnimation(fromAlpha, toAlpha);
+						alpha.setDuration(0);
+						alpha.setFillAfter(true);
+						parent.startAnimation(alpha);
 						
 						getActivity().startService(i);
 					}
@@ -180,6 +195,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		}
 	}
 
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_drag_and_drop_list_with_edit_text, null);

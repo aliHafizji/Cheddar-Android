@@ -1,5 +1,7 @@
 package com.creativeperson.cheddar.views;
 
+import org.holoeverywhere.widget.ListView;
+
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
@@ -7,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.ListView;
 
 public class RefreshableListView extends ListView {
 
@@ -28,11 +29,6 @@ public class RefreshableListView extends ListView {
 	
 	public RefreshableListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		initialize();
-	}
-
-	public RefreshableListView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
 		initialize();
 	}
 

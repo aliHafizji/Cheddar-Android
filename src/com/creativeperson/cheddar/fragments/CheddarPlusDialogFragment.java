@@ -1,11 +1,11 @@
 package com.creativeperson.cheddar.fragments;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import org.holoeverywhere.app.AlertDialog;
+import org.holoeverywhere.app.Dialog;
+import org.holoeverywhere.app.DialogFragment;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -48,9 +48,11 @@ public class CheddarPlusDialogFragment extends DialogFragment {
 		builder.setView(parentLayout);
 		return builder.create();
 	}
+	
+	
 
 	@Override
-	public void onAttach(Activity activity) {
+	public void onAttach(org.holoeverywhere.app.Activity activity) {
 		super.onAttach(activity);
 		if(!(activity instanceof CheddarPlusDialogListener)) {
 			throw new IllegalStateException("Activity must implement fragment's callbacks.");

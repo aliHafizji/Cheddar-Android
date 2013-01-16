@@ -1,6 +1,10 @@
 package com.creativeperson.cheddar.fragments;
 
-import android.app.Activity;
+import org.holoeverywhere.LayoutInflater;
+import org.holoeverywhere.app.Activity;
+import org.holoeverywhere.widget.EditText;
+import org.holoeverywhere.widget.ListView;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,14 +15,11 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ListView;
 
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.MenuItem;
 import com.creativeperson.cheddar.R;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.services.CheddarListService;
@@ -29,7 +30,7 @@ import com.creativeperson.cheddar.views.RefreshableListView;
 public class ListsListFragment extends CheddarListFragment implements LoaderCallbacks<Cursor> {
 
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-	private PullToRefreshListView mPullToRefreshListView;
+	private PullToRefreshListView mPullToRefresh;
 	
 	private static String[] LIST_PROJECTION = new String[] {
 		CheddarContentProvider.Lists.LIST_ID,
@@ -54,32 +55,33 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 		return inflater.inflate(R.layout.fragment_pull_to_refresh_with_edit_text, null);
 	}
 
+	
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+	public void onViewCreated(View view) {
+		super.onViewCreated(view);
+		mPullToRefresh = (PullToRefreshListView)getListView();
+		mPullToRefresh.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		
-		mPullToRefreshListView = (PullToRefreshListView)getListView();
-		mPullToRefreshListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		
-		mPullToRefreshListView.setOnPullToRefresh(new RefreshableListView.OnPullToRefresh() {
+		mPullToRefresh.setOnPullToRefresh(new RefreshableListView.OnPullToRefresh() {
 			
 			@Override
 			public void onPullToRefresh() {
 				forceListRefresh();
-				mPullToRefreshListView.setEnabled(false);
+				mPullToRefresh.setEnabled(false);
 			}
 		});
 		
-		mPullToRefreshListView.setMultiChoiceModeListener(new ModeCallback());
+		mPullToRefresh.setMultiChoiceModeListener(new ModeCallback());
         
         mEditText = (EditText)view.findViewById(R.id.edit_text);
         setEditorActionListener();
         
-		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
+		if (getSavedInstanceState() != null && getSavedInstanceState().containsKey(STATE_ACTIVATED_POSITION)) {
+			setActivatedPosition(getSavedInstanceState().getInt(STATE_ACTIVATED_POSITION));
 		}
 	}
-	
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,8 +90,8 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				if(intent.getAction().equals(Constants.LISTS_REFRESH_COMPLETE)) {
-					mPullToRefreshListView.getListHeaderView().close(0);
-					mPullToRefreshListView.setEnabled(true);
+					mPullToRefresh.getListHeaderView().close(0);
+					mPullToRefresh.setEnabled(true);
 				} else if(intent.getAction().equals(Constants.CHEDDAR_PLUS_ACCOUNT_NEEDED)) {
 					createCheddarPlusDialog();
 				}
@@ -126,10 +128,10 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 		mEditText.setHint(getResources().getString(R.string.list_hint_text));
 		
 		mAdapter = new SimpleCursorAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
+				R.layout.list_view_cell,
 				null,
 				new String[]{CheddarContentProvider.Lists.LIST_TITLE},
-				new int[]{android.R.id.text1},
+				new int[]{R.id.text1},
 				0);
 		setListAdapter(mAdapter);
 		getLoaderManager().initLoader(0, null, this);
@@ -189,7 +191,7 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 	protected void archiveButtonPressed(ActionMode mode, MenuItem item) {
 		Intent i = new Intent(getActivity(), CheddarListService.class);
     	i.putExtra(Constants.LISTS_ARCHIVE, getListView().getCheckedItemIds());
-    	getActivity().startService(i);
+    	getSherlockActivity().startService(i);
 	}
 
 	@Override
@@ -205,12 +207,12 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 	
 	@Override
 	protected void contextualActionBarShow() {
-		mPullToRefreshListView.setPullToRefreshEnabled(false);
+		mPullToRefresh.setPullToRefreshEnabled(false);
 	}
 
 	@Override
 	protected void contextualActionBarRemoved() {
-		mPullToRefreshListView.setPullToRefreshEnabled(true);
+		mPullToRefresh.setPullToRefreshEnabled(true);
 	}
 	
 	public void setActivatedPosition(int position) {

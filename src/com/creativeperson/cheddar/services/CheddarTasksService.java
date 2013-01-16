@@ -19,15 +19,14 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.NetworkInfo;
 import android.text.format.Time;
-import android.util.JsonReader;
-import android.util.JsonToken;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.creativeperson.cheddar.R;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.fragments.TasksListFragment;
 import com.creativeperson.cheddar.utility.Constants;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 
 public class CheddarTasksService extends CheddarIntentService {
 
