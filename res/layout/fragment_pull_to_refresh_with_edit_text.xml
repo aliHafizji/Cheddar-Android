@@ -10,16 +10,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="7dip"
         android:inputType="textCapSentences"
-        android:textSize="18dip"
+        android:textSize="18sp"
         android:imeOptions="actionDone" />
     
     <com.handmark.pulltorefresh.library.PullToRefreshListView
-        xmlns:dslv="http://schemas.android.com/apk/res/com.creativeperson.cheddar"
         android:id="@+id/pulltorefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/edit_text"
-        ptrAnimationStyle="@attr/flip" />
+        android:layout_below="@id/edit_text" />
 
     <include
         layout="@layout/empty_text_view" />
