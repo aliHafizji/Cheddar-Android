@@ -1,6 +1,4 @@
 <resources>
     <color name="blue">#FF0000FF</color>
     <color name="cheddar_orange">#fffd794d</color>
-    <color name="solid_white">#ffffffff</color>
-    <color name="secondary_text">#ff999999</color>
 </resources>

@@ -54,8 +54,8 @@ public class CheddarListService extends CheddarIntentService {
 			 * We register a listener, when internet connection is resumed we reconnect to all websockets
 			 *
 			 */
+			Log.d(Constants.DEBUG_TAG, "This is called again and again");
 			this.mToast.show();
-			broadcastListRefreshComplete();
 		} else {
 			long listIds[] = intent.getLongArrayExtra(Constants.LISTS_ARCHIVE);
 			String listTitle = intent.getStringExtra(Constants.CREATE_NEW_LIST);

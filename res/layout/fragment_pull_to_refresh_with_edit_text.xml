@@ -10,16 +10,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="7dip"
         android:inputType="textCapSentences"
-        android:textSize="18sp"
+        android:textSize="18dip"
         android:imeOptions="actionDone" />
     
-    <com.creativeperson.cheddar.views.PullToRefreshListView
-        android:id="@android:id/list"
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/pulltorefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/edit_text"
-        android:background="@android:color/transparent"
-		android:cacheColorHint="@android:color/transparent" />
+        android:layout_below="@id/edit_text" />
 
     <include
         layout="@layout/empty_text_view" />
