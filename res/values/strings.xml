@@ -20,6 +20,7 @@
     <!-- menu -->
     <string name="archive">Archive</string>
     <string name="refresh_tasks">Refresh tasks</string>
+    <string name="logout">Logout</string>
     <string name="drag_description">Reposition task</string>
     
     <!-- Dialog -->

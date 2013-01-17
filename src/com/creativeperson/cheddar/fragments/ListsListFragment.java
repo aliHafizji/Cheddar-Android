@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -13,12 +15,15 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.creativeperson.cheddar.LoginActivity;
 import com.creativeperson.cheddar.R;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.services.CheddarListService;
@@ -32,6 +37,7 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 	private PullToRefreshListView mPullToRefreshListView;
+	private SharedPreferences mSharedPreferences;
 	
 	private static String[] LIST_PROJECTION = new String[] {
 		CheddarContentProvider.Lists.LIST_ID,
@@ -65,7 +71,7 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 				if (getListView().getCheckedItemCount() > 0) {
 					mPullToRefreshListView.setMode(Mode.DISABLED);
 				} else {
-					mPullToRefreshListView.setMode(Mode.PULL_DOWN_TO_REFRESH);
+					mPullToRefreshListView.setMode(Mode.PULL_FROM_START);
 				}
 			}
 		});
@@ -78,6 +84,10 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		mSharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, getActivity().MODE_PRIVATE);
+		setHasOptionsMenu(true);
+		
 		mReceiver = new BroadcastReceiver() {
 			
 			@Override
@@ -91,6 +101,27 @@ public class ListsListFragment extends CheddarListFragment implements LoaderCall
 		};
 	}
 	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.lists_menu, menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.logout:
+			getActivity().finish();
+			
+			Editor editor = mSharedPreferences.edit();
+			editor.putString(Constants.ACCESS_TOKEN, null);
+			editor.commit();
+			
+			startActivity(new Intent(getActivity(), LoginActivity.class));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	@Override
 	public void onResume() {
 		super.onResume();

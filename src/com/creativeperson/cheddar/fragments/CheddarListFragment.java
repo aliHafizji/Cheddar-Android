@@ -65,7 +65,6 @@ public abstract class CheddarListFragment extends ListFragment {
             switch (item.getItemId()) {
             case R.id.archive:
             	archiveButtonPressed(mode, item);
-            	mode.setTitle(null);
                 break;
             }
             return true;
