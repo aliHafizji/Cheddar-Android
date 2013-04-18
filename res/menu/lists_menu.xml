@@ -3,4 +3,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/logout"
           android:title="@string/logout"/>
+
+    <item
+        android:id="@+id/refresh_lists_item"
+        android:title="@string/refresh_lists"
+        android:icon="@drawable/ic_menu_refresh"
+        android:showAsAction="ifRoom"
+        />
 </menu>

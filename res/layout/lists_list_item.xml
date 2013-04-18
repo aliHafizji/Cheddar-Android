@@ -1,0 +1,40 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    >
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/lists_list_item_title"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        tools:context=".TasksListFragment"
+        android:layout_weight="1"
+        android:gravity="fill_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/lists_list_item_title_uncompleted_task_count"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        style="?android:attr/textAppearanceMedium"
+        android:background="@color/cheddar_orange"
+        android:textColor="@color/white"
+        android:text="1"
+        android:gravity="fill_vertical"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp" />
+
+</LinearLayout>

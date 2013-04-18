@@ -12,7 +12,6 @@ Get the latest source
 
 The project depends on some external libraries.
 
-  * [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh)
   * [Android-DragAndDropListView](https://github.com/bauerca/drag-sort-listview)
 
 Download them and add them as library dependencies.
