@@ -2,6 +2,8 @@
 
 This is a universal Android app for [Cheddar](http://cheddarapp.com), a simple task manager.
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Cheddar--Android-orange.svg?style=flat)](https://android-arsenal.com/details/3/710)
+
 ## Getting started
 
 Get the latest source 
