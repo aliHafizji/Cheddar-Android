@@ -30,19 +30,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.creativeperson.cheddar.R;
-import com.creativeperson.cheddar.R.anim;
 import com.creativeperson.cheddar.data.CheddarContentProvider;
 import com.creativeperson.cheddar.services.CheddarTasksService;
 import com.creativeperson.cheddar.utility.Constants;
@@ -56,7 +52,6 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 	public static final String LIST_ID = "list_id";
 
 	private DragSortListView mDragSortListView;
-	private MenuItem mRefreshMenuItem;
 
 	private static int TASK_TEXT_COLUMN = 1;
 	private static int TASK_COMPLETED_COLUMN = 2;
@@ -72,28 +67,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 		i.putExtra(LIST_ID, listId);
 		getActivity().startService(i);
 	}
-	
-	private void startRefreshAnimation() {
-		if (getActivity() != null) {
 
-			LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ImageView iv = (ImageView) inflater.inflate(R.layout.refresh_action_view, null);
-
-            Animation rotation = AnimationUtils.loadAnimation(getActivity(), anim.refresh_anim);
-            rotation.setRepeatCount(Animation.INFINITE);
-            iv.startAnimation(rotation);
-
-            mRefreshMenuItem.setActionView(iv);
-        }
-	}
-	
-	private void stopRefreshAnimation() {
-		if(mRefreshMenuItem != null && mRefreshMenuItem.getActionView() != null) {
-			mRefreshMenuItem.getActionView().clearAnimation();
-			mRefreshMenuItem.setActionView(null);
-		}
-	}
-	
 	public class TaskTagHandler implements TagHandler {
 
 		public void handleTag(boolean opening, String tag, Editable output,
@@ -337,7 +311,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 			cursor.moveToFirst();
 			ArrayList<Long> taskIds = new ArrayList<Long>();
 
-			while (cursor.isAfterLast() == false)  {
+			while ( ! cursor.isAfterLast())  {
 				taskIds.add(cursor.getLong(0));
 				cursor.moveToNext();
 			}
@@ -351,8 +325,7 @@ public class TasksListFragment extends CheddarListFragment implements android.su
 				sortedTasks.put(currentPositions.indexOf(index), taskIds.get(index));
 			}
 
-			Collection<Long> reorderedTaskIds = sortedTasks.values();
-			return reorderedTaskIds;
+            return sortedTasks.values();
 		}
 
 		@Override

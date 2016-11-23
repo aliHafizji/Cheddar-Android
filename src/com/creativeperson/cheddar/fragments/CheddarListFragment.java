@@ -4,14 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.CursorAdapter;
-import android.view.ActionMode;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.*;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,11 +18,13 @@ import com.creativeperson.cheddar.R;
 
 public abstract class CheddarListFragment extends ListFragment {
 
-	protected EditText mEditText;
-	protected CursorAdapter mAdapter;
-	protected BroadcastReceiver mReceiver;
-	
-	protected abstract void archiveButtonPressed(ActionMode mode, MenuItem item);
+    protected MenuItem mRefreshMenuItem;
+
+    protected EditText mEditText;
+    protected CursorAdapter mAdapter;
+    protected BroadcastReceiver mReceiver;
+
+    protected abstract void archiveButtonPressed(ActionMode mode, MenuItem item);
 	protected abstract void contextualActionBarShow();
 	protected abstract void contextualActionBarRemoved();
 	protected abstract void keyboardDoneButtonPressed();
@@ -45,8 +46,29 @@ public abstract class CheddarListFragment extends ListFragment {
 			});
 		}
 	}
-	
-	protected class ModeCallback implements ListView.MultiChoiceModeListener {
+
+    protected void startRefreshAnimation() {
+        if (getActivity() != null) {
+
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            ImageView iv = (ImageView) inflater.inflate(R.layout.refresh_action_view, null);
+
+            Animation rotation = AnimationUtils.loadAnimation(getActivity(), R.anim.refresh_anim);
+            rotation.setRepeatCount(Animation.INFINITE);
+            iv.startAnimation(rotation);
+
+            mRefreshMenuItem.setActionView(iv);
+        }
+    }
+
+    protected void stopRefreshAnimation() {
+        if(mRefreshMenuItem != null && mRefreshMenuItem.getActionView() != null) {
+            mRefreshMenuItem.getActionView().clearAnimation();
+            mRefreshMenuItem.setActionView(null);
+        }
+    }
+
+    protected class ModeCallback implements ListView.MultiChoiceModeListener {
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getActivity().getMenuInflater();

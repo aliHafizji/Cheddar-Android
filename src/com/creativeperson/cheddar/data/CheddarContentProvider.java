@@ -37,6 +37,7 @@ public class CheddarContentProvider extends ContentProvider {
 		public static final String LIST_TITLE = "title";
 		public static final String LIST_POSITION = "position";
 		public static final String ARCHIVED_AT = "archived_at";
+        public static final String LIST_ACTIVE_UNCOMPLETED_TASK_COUNT = "active_uncompleted_tasks_count";
 	}
 	
 	public static final class Tasks implements BaseColumns {
@@ -193,6 +194,7 @@ public class CheddarContentProvider extends ContentProvider {
 			database.execSQL("CREATE TABLE " + LISTS_TABLE_NAME + " (" + Lists.LIST_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
 																	   + Lists.LIST_TITLE + " TEXT," 
 																	   + Lists.LIST_POSITION + " INTEGER," 
+																	   + Lists.LIST_ACTIVE_UNCOMPLETED_TASK_COUNT + " INTEGER,"
 																	   + Lists.ARCHIVED_AT +" TEXT );");
 			
 			database.execSQL("CREATE TABLE " + TASKS_TABLE_NAME + "(" + Tasks.TASK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 

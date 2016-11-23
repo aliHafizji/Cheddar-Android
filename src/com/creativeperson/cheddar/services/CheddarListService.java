@@ -227,6 +227,8 @@ public class CheddarListService extends CheddarIntentService {
 				contentValues.put(CheddarContentProvider.Lists.LIST_TITLE, reader.nextString());
 			} else if(name.equals("archived_at") && reader.peek() != JsonToken.NULL) {
 				contentValues.put(CheddarContentProvider.Lists.ARCHIVED_AT, reader.nextString());
+            } else if(name.equals(CheddarContentProvider.Lists.LIST_ACTIVE_UNCOMPLETED_TASK_COUNT)) {
+                contentValues.put(CheddarContentProvider.Lists.LIST_ACTIVE_UNCOMPLETED_TASK_COUNT, reader.nextLong());
 			} else if(name.equals("error") && reader.nextString().equals("plus_required")) {
 				//send out a broadcast saying that you need to buy stuff
 				//redirect the user here
